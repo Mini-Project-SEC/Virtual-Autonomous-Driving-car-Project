@@ -32,7 +32,7 @@ def telemetry(sid, data):
                 image =Image.open(BytesIO(base64.b64decode(data["image"])))
                 # save frame
             if args.image_folder!="
-                    timestamp
+                    timestamp 
                     datetime.utcnowO.strftime("%Y %m %d %H %M %S %P)[:-3]
                     image_filename = os.path.join(args .image_folder, timestamp)
                     image.save(*(} jpg' .format(image_filename))
