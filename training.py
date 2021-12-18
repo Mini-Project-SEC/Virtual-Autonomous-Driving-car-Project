@@ -1,67 +1,54 @@
-import pandas as pd
-import numpy as up
-from sklearn.model_ selection import train test split
-from keras. models import Sequential
-from keras.optimizers import Adam
-from keras.callbacks import ModelCheckpoint
-from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense,
-Flatten
-from utils import INPUT SHAPE, batch generator
-import argparse
+print("Setting up")
 import os
-np.random.seed(0)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-def load data(args):
-        "Load training data and split it into training and validation set"
-        data_df=pd.read_csv(os.path.join(args.data_dir, 'driving_log.csv'))
-        X= data_df[['center', 'left', 'right']].values
-        y = data df['steering'] .values
-        X_train, X_valid,y_train,y_valid=test_size-args.test_size, random_state=0
-        return X_train, X valid, y train, y _valid
-        def build_model(args):
-                model = Sequential
-                model.add (Lambda (lambda x: x/127.5-1.0, input shape=INPUT SHAPE))
-                model.add(Conv2D(24, 5, 5, activation='elu', subsample-(2, 2)))
-                model.add(Conv2D(36, 5, 5, activation='elu', subsample=(2, 2)))
-                model.add(Conv2D (48, 5, 5, activation='elu', subsample=(2, 2)))                                 model.add(Conv2D(64, 3, 3, activation=-elu))
-                model.add(Conv2D(64, 3, 3, activation='elu')
-                model.add(Dropout(args.keep_prob))
-                model.add (Flatten)
-                model.add(Dense(100, activation='elu'))
-                model.add(Dense(50, activation='elu'))
-                model.add(Dense(10, activation='elu'))
-                model.add(Dense(1))
-                model.summary()
-                return model
-        def train model(model, args, X_train, X_ valid, y_train, y_valid):
-                checkpoint = ModelCheckpoint('model-(epoch:03d}.h5',monitor-'val loss',verbose=0,save best only-args.save best only,mode='auto')
-                model.compile(loss-'mean_squared error',optimizer-Adam(Ir-args:.learning_rate))
-                model.,fit generator(batch generator(args.data dir, X train, y train,args.batch _size, True),args.samples _per epoch,args.nb_epoch,max q size=]
-                validation data-batch generator(args .data dir, X valid, y _valid,
-                args.batch _size, False),
-                nb val samples=len(X valid),callbacks-[checkpoint],verbose=1)
-      def s2b(s):
-      #Converts a string to boolean value
-      s=s.lower()
-        return s == 'true' or S == 'yes' or S ='y' or S== '1'
-        def main:
-#Load train/validation data set and train the modelparserProgram')
-parser.add argument(-d"', help-datadefault='data')argparse.ArgumentParser(description-'Behavioral Cloning Trainingdirectory', dest='data dir',type-str,
-                parser.add argument('-t', help-'test size fraction'.type=-Moat, default=0.2)dest='test size',
-                parser.add argument('-k', help=drop out probability',type=float, default=0.5)dest='keep _prob',
-                parser.add_argument('-n', help='number of epochs',type=int, default-10)
-                parser.add _argument('-s',.dest='b epoch',help='samplesdest='samples per epoch', type=int, default=20000)
-                parser.add argument('-b', help= batch size',type=int, default=40)perepoch',
-                dest='batch size',
-                parser.add argument('-o', help='save best models only', dest-'save_best only,type=s2b, default='true')
-                parser.add argument('-l', help='learning rate',type=float, default=1.0€-4)
-                        dest=learning_rate',args = parser.parse args'
-                        print(- * 30)
-                        print('Parameters')
-                        print('-' * 30)
-                        for key, value in vars(args).items0:
-                                print('{:<20} := B'. format(key, value))
-                                print('-' * 30)
-                                data = load data(args)
-                                model = build model(args)
-                                train model(model, args, *data)
+from utils import *
+from sklearn.model_selection import train_test_split
+
+
+
+#1
+path = 'myData1'
+data = importDataInfo(path)
+
+#2
+data  = balanceData(data,display=False)
+
+#3
+imagesPath,steerings = loadData(path,data)
+# print(imagesPath[0],steering[0])
+
+#4
+xTrain,xTest,yTrain,yTest = train_test_split(imagesPath,steerings,test_size=0.2,random_state=5)
+
+# print("total training states",len(xTrain))
+# print("total test states",len(xTest))
+
+#5
+
+#6
+
+#7
+
+#8
+model = createModel()
+model.summary()
+
+
+#9
+history = model.fit(batchGen(xTrain,yTrain,100,1),steps_per_epoch = 300,epochs=10,
+	validation_data= batchGen(xTest,yTest,100,0),validation_steps=200)
+
+#10
+
+model.save('final.h5')
+print("Model Saved")
+
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.legend(['Training','Validation'])
+plt.ylim([0,1])
+plt.title('Loss')
+plt.xlabel('Epoch')
+plt.show()
+
