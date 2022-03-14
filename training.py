@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 
 
 #1
-path = 'myData1'
+path = 'myData'
 data = importDataInfo(path)
 
 #2
@@ -36,12 +36,12 @@ model.summary()
 
 
 #9
-history = model.fit(batchGen(xTrain,yTrain,100,1),steps_per_epoch = 300,epochs=10,
+history = model.fit(batchGen(xTrain,yTrain,100,1),steps_per_epoch = 300,epochs=20,
 	validation_data= batchGen(xTest,yTest,100,0),validation_steps=200)
 
 #10
 
-model.save('final.h5')
+model.save('model.h5')
 print("Model Saved")
 
 plt.plot(history.history['loss'])
